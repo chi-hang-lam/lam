@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+<body>
+<h1>M</h1>
+
+<p> <button type="button" onclick="ShowImage(100)">Show all images</button> </p>
+
+<script>
+function ImageExist(url) 
+{
+   var img = new Image();
+   img.src = url;
+   return img.height != 0;
+}
+
+function ShowImage(n)
+{
+    for (i=1; i<n; i++){
+        fname="strings-"+("00000" + i).substr(-5,5)+".png";
+        if (ImageExist(fname)){
+            document.write("<img src='"+fname+"'>");
+        } 
+    }
+}
+
+ShowImage(10)
+</script>
+
+</body>
+</html> 

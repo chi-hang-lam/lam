@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>DPLM Movies</title>
+    <style>
+    .videolist {
+        text-align: center;
+    }
+    .videolist > div {
+        display: inline-block;
+        margin: 10px;
+    }
+    .videolist > div > div {
+        font-size: large;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+    .videolist > div > video {
+        display: block;
+        width: 500px;
+    }
+    </style>
+</head>
+<body>
+<h2>Distinguishable-particle lattice model (DPLM)</h2>
+<p>
+The following 2 videos show the dynamics of DPLM from kinetic Monte Carlo simulation at a high temperature (T = 0.5) and a low temperature (T = 0.16) respectively. Both system consists of 1592 particles and 8 voids in a 40 x 40 square lattice (phi_v = 0.005). Particles are randomly colored to indicate their distinguishable nature. In the first video (15fps), consecutive frames correspond to a time lapse of 10^-5. In the second video (30fps), consecutive frames correspond to a time lapse of 10. The simulations were visualized using OpenGL. Direct download links: <a href="highT.mp4" download>highT.mp4</a> (3MB), <a href="lowT.mp4" download>lowT.mp4</a> (13MB).
+</p>
+<div class="videolist">
+    <div>
+        <div>T = 0.5</div>
+        <video src="highT.mp4" controls preload="metadata">
+            Your browser does not support HTML5 video.
+        </video>
+    </div>
+    <div>
+        <div>T = 0.16</div>
+        <video src="lowT.mp4" controls preload="metadata">
+            Your browser does not support HTML5 video.
+        </video>
+    </div>
+</div>
+</body>
+</html>

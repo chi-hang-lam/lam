@@ -1,0 +1,841 @@
+#!/usr/bin/perl
+
+############## Gnuplot front-end perl script (Last modified: 2017-08-27) ###############################
+##
+# gp [OPTIONS] [[STYLE] CURVES]] ...
+#
+# OPTIONS:
+#	    Scale:        l, lx, ll, or lz
+#	    Range:        x <x1>:<x2> or y <y1>:<y2> or z <z1>:<z2>
+#       Geometry:     geometry <geometry>        ( set window geometry; format: eg. "800x600")
+#       Title:        title <title>, nokey, skey
+#                     xlabel <xlabel>, ylabel <ylabel>, flabel <fig. ylabel>, noxtics, noytics
+#                     <key>:         curve title on legend, empty <key> suppresses curve title
+#       Grid:         grid or nogrid
+#       Axis:         noaxis
+#                     xtime                           (time format for x-axis, requires using)
+#       y2:           use right y-axis
+#       Contour:      contour   ( contour lines in 3D plot)
+#       Margin:       nomargin
+#       Printing:     ps                              (postscript output; default file: g.ps)
+#                     eps [<linewidth>]                             (postscript output; default file: g.eps)
+#                     png [<Size X>x<Size Y>]         (png output; default file: g.png)
+#                     output <filename>               (set output filename.<ext>)
+#                     table <filename>                (output data to file)
+#                     size <x>,<y>                    (0.5,0.5 = half of canvas)
+#                     origin <x>,<y>
+#       Animate:      animate <pause period>     ( for blocks 1 to 1024; ' ': continuous;  -1: until key pressed)
+#                     manimate <pause period>    ( for multiple files;   ' ': continuous;  -1: until key pressed)
+#       Interactive:  i  ( use 'tail -0f /tmp/<user>.gnuploti | gnuplot' to display )
+#       Multiplot:    plot2x, plot2y <plot1_ysize>
+#                     
+#       General Cmd:  cmd '<pre-commands>'
+#       list:         list 'a1 a2 ...'  (for use by using as list[curve], list[group])
+#       Other:        persist, reread <period>
+#
+# STYLE:
+#       Curve Style:  <Curve type> [<Curve property>] 
+#                     Curve type = po, li, lp, do, st
+#                     Curve property = pt <pointtype>, ps <pointsize>, lw <linewidth>, rgb #??????
+#       3D plot:      3d [matrix]                     (default format: single column, rows separated by blank lines)
+#       Error:        e or noe
+#       Data column:  using <col 1>:<col 2>    ( variables: 'group' -> group no.=1,2.., 'curve' -> curve no.=1,2..)
+#                     using <col 1>:<col 2>:<col 3>   (for plotting with errors)
+#       Every:        every <point_incr>:<block_incr>:<start_point>:<start_block>:<end_point>:<end_block>
+#                     noevery
+#                     block <block>
+#       Smoothing:    coarsen <bin width>
+#                     smooth <weight>  (higher weight gives less smoothing)
+#                     unique   
+#       y-shift:      yshift <dy>  (use after using)
+#       Curve name:   <curve name>:
+#                     keys <no. of keys> <key1> <key2> ...
+#       Color groups: group <group size>   (group is a counter usable in using)
+#                     cycle <cycle period>
+#       rgb Colors:   rgb     (3d plot is switched on, 4 columns in using is needed, colored according to 4th column with elements in [0,1] )
+#                     rgb <max value>   (must be precede by using with 3 columns, colored according to 3rd column normalized by <max value>)        
+# CURVES:
+#       Data file:    <file name>
+#                     <numbered filename>#[<start:end>]           (# will be substituted by an integer)
+#                     s <file name>                   (for file with multi-segments)
+#       Function:     fcn '<function>'
+#
+# FIT:
+#       fit:          fit <fcn> <variables> <file> # nothing can follow <file>
+#                     fitout <fcn> <variables> <file> # nothing can follow <file> # data & fitted curve output to <file>
+# ENVIRONMENTAL VARIABLES:
+#       skip plot:    GP_OFF
+#       quiet:        GP_QUIET
+#
+# eg.:
+#       gp datafile
+#       gp li using 2:3 datafile
+#       gp ll li using '2:($3)*($4)' datafile 
+#       gp x 0:100 using 1:2:3 e datafile1 no datafile2
+#       gp datafile fcn 'x**2' fcn 'x/2' ps
+#       gp lp using 1:12 coarsen 0.001 DRate10X1.energy
+#       gp cmd 'a=1' fcn 'a*x+1'
+#       gp po using -1:2:1 rgb 1024 surf.X1.r
+#       gp po using -1:2:-2:1 rgb surf.X1.r
+#       gp group 6 using '(($1)+group):2' files*
+############################################################################################
+
+#endcomments
+
+$title_offset = "offset -15,-2.3";
+$xlabel_offset = "0,-1.";
+$cmndtail = ",";
+$curve_cnt=0;
+$simplekey=0;
+$interactive=0;
+$GroupSize=$CyclePeriod=0;
+$LineCnt=0;
+$group=0;
+$rereadperiod=-1;
+$axes = "";
+$matrix = ""; 	# = "matrix" if 3D data in matrix format
+$font = "";
+
+if (defined $ENV{goff}){ exit; }
+if (defined $ENV{GP_OFF}){ exit; }
+if ( !defined $ARGV[0] ) { print_help(gp); die "\n";}
+
+# plot for 2d and splot for 3d
+$plot = "plot";
+
+# get command line ###############################################
+
+if (defined $ARGV[0]){ $cmdstr = join(' ',@ARGV);};
+
+while (defined $ARGV[0]) {
+	{
+	# Global commands #####################################
+	# gnuplot options
+
+	if ($ARGV[0] eq "3d") {
+		#$plot = "set border; set data style line; set xlabel 'x'; set ylabel 'y'; splot"; shift; last;
+		$plot = "set border; set xlabel 'x'; set ylabel 'y'; splot"; shift; last;
+	}
+	if ($ARGV[0] eq "matrix") {
+		$matrix = "matrix"; shift; last;
+	}
+
+	if ($ARGV[0] eq "persist") {
+	    $goption="$goption -persist"; shift; last;
+	}
+	if ($ARGV[0] eq "reread") {
+	    shift; $rereadperiod=$ARGV[0]; shift; last;
+	}
+	if (($ARGV[0] eq "animate")||($ARGV[0] eq "manimate")) {
+		if ($ARGV[0] eq "animate") {
+			$animate_blocks=1;
+		}
+		shift;
+		$animate_pause = "0";
+		if (($ARGV[0] =~ /^(\d+)$/) || ($ARGV[0] =~ /^(\d+)$/)) {
+			$animate_pause = $ARGV[0]*1000;
+			shift;
+		}
+		last;
+	}
+	if ($ARGV[0] eq "i") { 
+		$interactive=1; shift; last;
+	}
+	if ($ARGV[0] eq "geometry") {
+		shift; $goption="$goption -geometry ".shift; last;
+	}
+	if ($ARGV[0] eq "1280-") {
+		shift; $goption="$goption -geometry 1260x970"; last;
+	}
+
+	if ($ARGV[0] eq ",") { 
+		$precmd="$precmd set datafile separator ',';"; shift; last;
+	}
+
+	# log scales
+	if ($ARGV[0] eq "ll") { 
+		$precmd="$precmd set logscale xy;"; shift; last;
+	}
+	if ($ARGV[0] eq "l") {
+		$precmd="$precmd set logscale y;"; shift; last;
+	}
+	if ($ARGV[0] eq "lx") {
+		$precmd="$precmd set logscale x;"; shift; last;
+	}
+
+    # time format
+	if ($ARGV[0] eq "xtime") { 
+		$precmd="$precmd set xdata time; set timefmt '%Y%m%d%H%M'; set format x '%H:%M'; "; shift; last;
+	}
+	if ($ARGV[0] eq "xdate") { 
+		$precmd="$precmd set xdata time; set timefmt '%Y%m%d'; set format x '%Y-%m-%d'; "; shift; last;
+	}
+
+
+	# ranges
+	if ($ARGV[0] eq "x") { 
+		shift; $precmd="$precmd set xrange \[$ARGV[0]\];"; shift; last;
+	}
+
+	if ($ARGV[0] eq "y") { 
+		shift; $precmd="$precmd set yrange \[$ARGV[0]\];"; shift; last;
+	}
+
+	if ($ARGV[0] eq "z") { 
+		shift; $precmd="$precmd set zrange \[$ARGV[0]\];"; shift; last;
+	}
+	if ($ARGV[0] eq "xy") { 
+		shift; $precmd="$precmd set xrange \[$ARGV[0]\]; set yrange \[$ARGV[0]\];"; shift; last;
+	}
+	if ($ARGV[0] eq "xyz") { 
+		shift; $precmd="$precmd set xrange \[$ARGV[0]\]; set yrange \[$ARGV[0]\]; set zrange \[$ARGV[0]\];"; shift; last;
+	}
+
+	# title, labels
+	if ($ARGV[0] eq "title") { 
+	    shift; $title = $ARGV[0]; shift;
+	    $precmd="$precmd set title \'$title\' $title_offset;"; last;
+	}
+	if ($ARGV[0] eq "xlabel") { 
+        shift;
+        $o="";
+        if ($ARGV[0]=~/^([.0-9]+)$/){
+            $o="offset graph 0,$ARGV[0]";
+            shift;
+        }
+	    $xlabel = $ARGV[0]; shift;
+	    $precmd="$precmd set xlabel \'$xlabel\' $o $font;"; last;
+	}
+	if ($ARGV[0] eq "ylabel") { 
+        shift;
+        $o="";
+        if ($ARGV[0]=~/^([.0-9]+)$/){
+            $o="offset graph $ARGV[0]";
+            shift;
+        }
+	    $ylabel = $ARGV[0]; shift;
+	    $precmd="$precmd set ylabel \'$ylabel\' $o $font;"; last;
+	}
+	if ($ARGV[0] eq "y2label") { 
+        shift;
+        $o="";
+        if ($ARGV[0]=~/^([.0-9]+)$/){
+            $o="offset graph $ARGV[0]";
+            shift;
+        }
+	    $y2label = $ARGV[0]; shift;
+	    $precmd="$precmd set y2label \'$y2label\' $o $font;"; last;
+	}
+	if ($ARGV[0] eq "flabel") { 
+	    shift; $flabel = $ARGV[0]; shift;
+	    $precmd="$precmd unset label; set label \'$flabel\' $font at graph 0.05,0.92;"; last;
+	}
+	if ($ARGV[0] eq "label") { 
+	    shift; $label = $ARGV[0]; shift; $pos = $ARGV[0]; shift;
+	    $precmd="$precmd set label \'$label\' $font at graph $pos;"; last;
+	}
+
+	if ($ARGV[0] eq "lb") { 
+	    shift; $xlabel = $ARGV[0]; shift; $ylabel = $ARGV[0]; shift;
+	    $precmd="$precmd set xlabel \'$xlabel\'; set ylabel \'$ylabel\';"; last;
+	}
+	if ($ARGV[0] eq "noxtics") { 
+		$precmd="$precmd set noxtics;"; shift; last;
+	}
+	if ($ARGV[0] eq "noytics") { 
+		$precmd="$precmd set noytics;"; shift; last;
+	}
+	if ($ARGV[0] eq "nokey") { 
+		$precmd="$precmd set nokey;"; shift; last;
+	}
+	if ($ARGV[0] eq "skey") { 
+	  $simplekey=1; shift; last;
+	}
+    if ($ARGV[0] eq "keys"){
+        shift;
+        $precmd="$precmd set key reverse Left; "; # line on the left of key for publications
+        $nkey=$ARGV[0]; shift;
+        for ($k=1; $k<=$nkey; ++$k){
+            $keys[$k] = $ARGV[0]; shift;
+        }
+        last;
+    }
+
+	if ($ARGV[0] eq "nomargin") { 
+		$precmd="$precmd set tmargin 0; set bmargin 0; set lmargin 0; set rmargin 0;"; shift; last;
+	}
+
+	# Grid
+	if ($ARGV[0] eq "grid") { 
+		$precmd="$precmd set grid;"; shift; last;
+	}
+	if ($ARGV[0] eq "nogrid") { 
+		$precmd="$precmd set nogrid;"; shift; last;
+	}
+	if ($ARGV[0] eq "noaxis") { 
+		$precmd="$precmd set nozeroaxis;"; shift; last;
+	}
+	if ($ARGV[0] eq "contour") { 
+		$precmd="$precmd set contour;"; shift; last;
+	}
+
+
+	#printing
+
+	if ($ARGV[0] eq "dashed") { 
+		$dashed=1; shift; last;
+	}
+
+	if (($ARGV[0] eq "ps")||($ARGV[0] eq "print")) { 
+		#$precmd="set term postscript landscape enhanced color 'Times-Roman' 12; set output 'g.ps'; $precmd";
+		$precmd="set term postscript landscape enhanced color 'Times-Roman' 24; set output 'g.ps'; $precmd";
+	 	shift; last;
+	}
+	if ($ARGV[0] eq "pdf") { 
+		#$precmd="set term postscript landscape enhanced color 'Times-Roman' 12; set output 'g.ps'; $precmd";
+		$precmd="set term pdf ; set output 'g.pdf'; $precmd";
+	 	shift; last;
+	}
+	if (($ARGV[0] eq "eps")||($ARGV[0] eq "print")) { 
+	    if (!defined $fname){ $fname = "g.eps"; }
+        shift;
+        
+        $lw = 1;
+        if (defined $ARGV[0] && $ARGV[0] =~ /^\d+$/){
+            $lw = $ARGV[0]; shift;
+        }
+		#$precmd="set term postscript eps enhanced 'Times-Roman' 22; set output \'$fname\'; $precmd";
+		#$precmd="set term postscript eps enhanced solid 'Times-Roman' 22; set output \'$fname\'; $precmd";
+		if ($dashed eq 1){ 
+            $precmd="set term postscript eps enhanced color dashed 'Times-Roman' 22; set output \'$fname\'; $precmd";
+        }else{
+            $precmd="set term postscript eps enhanced color solid 'Times-Roman' 22; set output \'$fname\'; $precmd";
+        }
+        $font="font \'Times-Roman-bold\'";
+	 	last;
+	}
+	if ($ARGV[0] eq "png") {
+	    if (!defined $fname){
+            if (defined $title){ $fname = $title; }
+            elsif ((defined $xlabel) && (defined $ylabel)){ $fname = $ylabel."_vs_".$xlabel; }
+            elsif (defined $ylabel){ $fname = $ylabel; }
+            else {$fname = "g"; }
+            $fname =~ s/[\/'"`|<>\[\]]/_/g;
+            $fname = "$fname.png";
+	    }
+	    print "Output file: $fname\n";
+        $pngsize="1280,1024";
+        if (defined $ARGV[1]) {
+            if ($ARGV[1] =~ /(\d+)x(\d+)/){
+                $pngsize="$1,$2";
+                shift;
+            }
+        }
+            
+	    $precmd="set term png large size $pngsize crop; set output \'$fname\'; $precmd"; 
+	    shift; last;
+	}
+	if ($ARGV[0] eq "pngsmall") {
+		#$precmd="set term png large size 600,400; set output \'g.png\'; $precmd"; # picsize syntax obtained from news group
+		$precmd="set term png small; set output \'g.png\'; $precmd"; # picsize syntax obtained from news group
+	 	shift; last;
+	}
+	if ($ARGV[0] eq "size") {
+		shift; $size=$ARGV[0]; $precmd="$precmd set size $ARGV[0];"; shift; last;
+	}
+	if ($ARGV[0] eq "origin") {
+		shift; $size=$ARGV[0]; $precmd="$precmd set origin $ARGV[0];"; shift; last;
+	}
+	if ($ARGV[0] eq "table") { 
+		if (!defined $fname){ $fname="g.table"; };
+        $precmd="set table \'$fname\'; $precmd";
+	 	shift; last;
+	}
+	if ($ARGV[0] eq "output") { 
+		shift; $fname="$ARGV[0]"; 
+        if ( $fname =~ /(eps)$/ || $fname =~ /(ps)$/ || $fname =~ /(png)$/ || $fname =~ /(table)$/ ){
+            $ARGV[0]=$1; # filename extension; should be png, ps, eps, etc.
+            print "File type: $ARGV[0]\n";
+        }else{
+            shift; 
+        }
+        last;
+	}
+
+
+
+	# Curve properties ####################################
+	# style
+	$pointtype="";
+
+	if ($ARGV[0] eq "po") {
+		$style="with point";
+	}
+	if ($ARGV[0] eq "li") {
+		$style="with lines";
+	}
+	if ($ARGV[0] eq "lp") { 
+		$style="with linespoints";
+	}
+	if ($ARGV[0] eq "do") { 
+		$style="with dot";
+	}
+    if ($ARGV[0] eq "po" || $ARGV[0] eq "lp" || $ARGV[0] eq "li" || $ARGV[0] eq "do") {
+      shift;
+	  if (defined $ARGV[0] && $ARGV[0] =~ /^-*\d+$/){
+	    $style = "$style linecolor $ARGV[0]"; shift;
+	  }
+      while (defined $ARGV[0]){
+          if ($ARGV[0] =~ /^pt$/){
+              shift;
+              $style = "$style pointtype $ARGV[0]";
+              shift;
+          }elsif (defined $ARGV[0] && $ARGV[0] =~ /^ps$/){
+              shift;
+              $style = "$style pointsize $ARGV[0]";
+              shift;
+          }elsif (defined $ARGV[0] && $ARGV[0] =~ /^lt$/){
+              shift;
+              $style = "$style linetype $ARGV[0]";
+              shift;
+          }elsif (defined $ARGV[0] && $ARGV[0] =~ /^lw$/){
+              shift;
+              $style = "$style linewidth $ARGV[0]";
+              shift;
+          }elsif (defined $ARGV[0] && $ARGV[0] =~ /^rgb$/){
+              shift;
+              $style = "$style lc rgb '$ARGV[0]'";
+              shift;
+          }elsif (defined $ARGV[0] && $ARGV[0] =~ /^vari$/){ # incompatiable with li
+              shift;
+              $style = "$style lc rgb vari"; # requires 4th column in 'using'
+          }else{
+              last;
+          }
+      }
+      last;
+    }
+
+	if ($ARGV[0] eq "ls") {
+        shift;
+		$style="$style linestyle $ARGV[0]"; # style should be defined in cmd
+        shift;
+	}
+
+
+	if ($ARGV[0] eq "st") { 
+		shift; $style="with steps"; last;
+	}
+	if ($ARGV[0] eq "im") { 
+		shift; $style="with impulses"; last;
+	}
+
+    if ($ARGV[0] eq "rgb3d"){
+        $rgb="lc  rgb  variable";
+        $precmd="$precmd set view 0, 0, 1, 1;";
+        #$precmd="$precmd rgb(x)=int(256*x);"; 
+        if (defined $ARGV[1] && $ARGV[1] =~ /^\d+$/){
+            # rgb [colormax]
+            $colormax = "$ARGV[1]";
+            shift;
+            $using =~ s/:(\d)$/:-2:(rgb((\$$1)\/$colormax))/;
+            #print "$using\n"; exit;
+        }
+        $ARGV[0]="3d";
+
+        last;
+    }
+
+	if ($ARGV[0] eq "color") {
+	  shift; $UserColor=$ARGV[0]; shift; last;
+	}
+	if ($ARGV[0] eq "autocolor") {
+	  shift; $UserColor=""; last;
+	}
+
+	# using
+	if ($ARGV[0] eq "using") { 
+        shift;
+        $usingcol=$ARGV[0]; shift;
+        if ($usingcol =~ /(\d+)-(\d+)/){
+            $u1 = $1; $u2 = $2;
+            $usingcolnext=$usingcol;
+            $usingcol =~ s/(\d+)-(\d+)/$u1/;
+            $u1 = $u1+1;
+            if ($u1==$u2){
+                $usingcolnext =~ s/(\d+)-(\d+)/$u1/;
+            }else{
+                $usingcolnext =~ s/(\d+)-(\d+)/$u1-$u2/;
+            }
+            @ARGV=($ARGV[0], "using", $usingcolnext, @ARGV);
+        }
+        $using="using $usingcol"; last;
+	}
+
+    # yshift
+	if ($ARGV[0] eq "yshift") { 
+		shift; $yshift="$ARGV[0]"; shift; 
+        $yshift_y=0;
+        if ((!defined $using) || ($using eq "")){ $using = "using 1:2"; }
+        if (!($using =~ /:/)){ $using =~ s/using (\S+)/using 0:$1/; }
+        $using =~ s/(\d):(\d)/(\$$1):(\$$2+yshift)/;
+        $using_yshift = $using;
+        last;
+	}
+
+	# coarsen
+	if ($ARGV[0] eq "coarsen") {
+	  shift; $binning=1; $binwidth=$ARGV[0]; $ARGV[0]="unique"; last;
+	}
+
+	# every
+	if ($ARGV[0] eq "every") { 
+		shift; $every="every $ARGV[0]"; shift; last;
+	}
+	if ($ARGV[0] eq "noevery") { 
+		shift; $every=""; last;
+	}
+	if ($ARGV[0] eq "block") {
+	  shift; $every="every :::$ARGV[0]::$ARGV[0]"; shift; last;
+	}
+	# unique
+	if ($ARGV[0] eq "unique") {
+		shift; $smooth="smooth unique"; last;
+	}
+
+	# smooth
+	if ($ARGV[0] eq "smooth") {
+		shift; $smooth="smooth acsplines"; $SmoothWeight=":($ARGV[0])"; shift; last;
+	}
+
+	# group
+	if ($ARGV[0] eq "group"){
+	  shift; $GroupSize=shift @ARGV; $ColorCnt=0; last;
+	}
+	if ($ARGV[0] eq "cycle"){
+	  shift; $CyclePeriod=shift @ARGV; $ColorCnt=0; last;
+	}
+
+	# error
+	if ($ARGV[0] eq "e") {
+		shift;
+		$error="with errorbars pointtype 6";
+		if (!(defined $using)) {
+			$using="using 1:2:3";
+		}
+		last;
+	}
+	if ($ARGV[0] eq "noe") { 
+		shift; $error=""; $using=""; last;
+	}
+
+	# axes
+	if ($ARGV[0] eq "y2"){
+	  $precmd="$precmd set y2tics;"; $axes="axes x1y2"; $using=""; shift; last;
+	}
+
+	# curve title
+	if ($ARGV[0] =~ /:$/) {
+        if ($ARGV[0] eq ":"){
+            $ctitle="notitle";
+        }else{
+            chop $ARGV[0];
+            $ctitle="title \'$ARGV[0]\'";
+        }
+        shift; last;
+	}
+
+	# function
+	if ($ARGV[0] eq "fcn") {
+	    shift; 
+	    if (defined $curves) {
+		$curves="$curves,";
+	    }
+	    if ($ctitle ne ""){
+            $ctitle =~ s/\'$/: $ARGV[0]\'/;
+	    }
+	    $curves="$curves $ARGV[0] $style $ctitle"; shift;
+	    ++$curve_cnt;
+	    $ctitle = "";
+	    last;
+	}
+
+    # fit
+    if ($ARGV[0] eq "fit"){
+        shift;
+        $fitfcn=$ARGV[0]; shift;
+        $vari=$ARGV[0]; shift;
+        $fitfile=$ARGV[0]; 
+        $precmd = "$precmd; f(x)=$fitfcn; fit f(x) '$fitfile' $using via $vari; print $vari, 'RESULT'; ";
+        @ARGV = split(/ /,"li fcn f(x) po $fitfile");
+        last;
+    }
+
+    if ($ARGV[0] eq "fitout"){ # fit and output
+        shift;
+        $fitfcn=$ARGV[0]; shift;
+        $vari=$ARGV[0]; shift;
+        $fitfile=$ARGV[0]; 
+        $precmd = "$precmd; f(x)=$fitfcn; fit f(x) '$fitfile' $using via $vari; print $vari, ' RESULT'; ";
+        $fname = "$fitfile.r";
+        @ARGV = split(/ /,"table li fcn f(x) po $fitfile");  # must plot also $fitfile to set xrange etc correctly
+        last;
+    }
+
+	# multiplot
+	if ($ARGV[0] eq "plot2") {
+	  shift;
+      $plotdone="$precmd; set multiplot; plot $curves; ";
+      $curves="";
+	  $precmd="set autoscale; unset logscale x; unset logscale y;";
+	  $curve_cnt=0;
+	  $postcmd="$postcmd unset multiplot;";
+	  last;
+	}
+
+	if ($ARGV[0] eq "plot2x") {
+	  shift;
+      $plotdone="$precmd; set multiplot; set origin -0.05,0.; set size 0.55,1; plot $curves; ";
+      $curves="";
+	  $precmd="set origin 0.45,0.; set size 0.55,1; ";
+	  $curve_cnt=0;
+	  $postcmd="$postcmd unset multiplot;";
+	  last;
+	}
+
+	if ($ARGV[0] eq "plot2y") {
+	  shift;
+      $ysize=1.;
+      if ($size =~ /(\S+),(\S+)/){ $ysize=$2; }
+      print "$size $ysize\n";
+      $ysize1=$ARGV[0]; shift; $sep=$ARGV[0]; shift;
+      $ysize2=$ysize-$ysize1;
+      $yorigin=$ysize-$ysize1+$sep;
+      
+      $plotdone="$precmd; set multiplot; set origin 0.,$yorigin; set size 1,$ysize1; plot $curves; ";
+      $curves=""; $axes="";
+	  $precmd="set origin 0.,0.; set size 1.,$ysize2; ";
+	  $curve_cnt=0;
+	  $postcmd="$postcmd unset multiplot;";
+	  last;
+	}
+
+	# cmd
+	if ($ARGV[0] eq "cmd"){
+	    shift;
+	    $precmd="$precmd $ARGV[0];";
+	    shift; 
+	    last;
+	}
+
+	if ($ARGV[0] eq "opt"){
+	    shift;
+	    $opt="$ARGV[0]";
+	    shift; 
+	    last;
+	}
+
+    # list(array)
+	if ($ARGV[0] eq "list"){
+	    shift;
+	    @list=split(/ /,$ARGV[0]);
+	    shift; 
+	    last;
+	}
+
+	# split
+	if ($ARGV[0] eq "s") {
+		shift; $f=$ARGV[0]; shift;
+		system "split -d $f";
+		$f="$f.s/s#";
+		@ARGV=($f,@ARGV);
+		last;
+	}
+
+	# numbered files
+	if ($ARGV[0] =~ /#/){
+		$f0=$ARGV[0]; shift;
+		$starti=1; $endi=9999; $di=1;
+        if (defined $ARGV[0] && $ARGV[0] =~ /^(\d+)$/){ $di=$ARGV[0]; shift; $starti=$di }
+        if (defined $ARGV[0] && $ARGV[0] =~ /^(\d+)$/){ $starti=$ARGV[0]; shift; }
+        if (defined $ARGV[0] && $ARGV[0] =~ /^(\d+)$/){ $endi=$ARGV[0]; shift; }
+		if ($f0=~/#(\d*):*(\d*)/){
+		  if (! ($1 eq "")){$starti=$1;}
+		  if (! ($2 eq "")){$endi=$2;}
+		  $f0=~ s/#(\d*):*(\d*)/#/; 
+		}
+		@fs=();
+		for ($i=$starti; $i<=$endi ; $i+=$di) {
+			$f = $f0;
+			$f =~ s/#/$i/;
+			if (-r $f) { @fs=(@fs,$f); }
+		}
+		@ARGV=(@fs,@ARGV);
+		last;
+	}
+
+	#data file
+	++$curve_cnt;
+	if (!defined $animate_pause) {
+		if ($curve_cnt > 1) {
+			$curves="$curves, ";
+		}
+	} else {
+		#animate
+		if ($curve_cnt == 2) {
+		  #$curves="$curves; pause -1; $plot";
+		  $curves="$curves; $plot";
+		}elsif ($curve_cnt >= 3) {
+		  if ($animate_pause>0){
+			$curves="$curves\n! usleep $animate_pause\n$plot";
+		      }else{
+			$curves="$curves; \n$plot";
+		      }
+		}
+		if (defined $animate_blocks) {
+			$every = "every :::$curve_cnt\:\:$curve_cnt";
+		}
+	}
+
+    #curve title
+    if (defined $keys[1]){ 
+        if (defined $keys[$curve_cnt]){
+            $ctitle = "title '$keys[$curve_cnt]'"; 
+        }else{
+            $ctitle = "notitle";
+        }
+    }elsif ($simplekey && ($ctitle eq "")){
+        $ctitle = "title '$ARGV[0]'"; 
+    }
+
+	#smoothing
+	if (using eq "") {$SmoothWeight=""; }
+
+    if (defined $yshift){
+        $using = $using_yshift;
+        $using =~ s/yshift/$yshift_y/;
+        $yshift_y += $yshift;
+    }
+
+	#binning
+	if (!($binwidth eq "")){ 
+	  if ((!defined $using) || ($using eq "")){ $using = "using 1:2"; }
+	  if (!($using =~ /:/)){ $using =~ s/using (\S+)/using 0:$1/; }
+	  $using =~ s/(\d):/ \$$1:/;
+	  $using =~ s/(\S+):/(c($1,$binwidth)):/;
+	  $binwidth="";
+	}
+
+	if (defined $UserColor){
+	  $ColorCnt=$UserColor;
+	  $Color = "lt $ColorCnt pt $ColorCnt";
+	}else{
+	  if ($GroupSize>0){
+	    if ( $LineCnt%$GroupSize ==0 ){ ++$ColorCnt; $group=$ColorCnt;}
+	    $Color = "lt $ColorCnt pt $ColorCnt";
+	  }
+	  if ($CyclePeriod>0){
+	    if ( $LineCnt%$CyclePeriod == 0){ $ColorCnt=0; }
+	    ++$ColorCnt; $group=$ColorCnt;
+	    $Color = "lt $ColorCnt pt $ColorCnt";
+	  }
+	}
+
+    #postprocess $using
+    $using1 = $using;
+    #$using1 =~ s/list\[curve\]/1/g;
+    $using1 =~ s/list\[group\]/$list[$group-1]/g;
+    $using1 =~ s/list\[curve\]/$list[$curve_cnt-1]/g;
+    $using1 =~ s/group/$group/g;
+    $using1 =~ s/curve/$curve_cnt/g;
+
+	#sum up plotting commands/options for a curve
+	if ($error eq "") {
+	  if ($style eq "with lines"){ $Color =~ s/pt (\S+)//; } # style "line" does not accept pt
+	  $curves="$curves '$ARGV[0]' $matrix $every $using1$SmoothWeight $smooth $axes $ctitle $style $rgb $Color $opt";
+	}else {
+        $curves="$curves '$ARGV[0]' $axes $matrix $every $using1 $ctitle $error $opt";
+	}
+
+	if ((!defined $animate_pause)||(!defined $animate_blocks) || ($curve_cnt>1024)) {
+	  shift;
+	}
+	$ctitle="";
+	#$every="";
+	++$LineCnt;
+    }
+}
+
+# post-process commands ##########################################
+if (!($precmd =~/title/) && !($plot =~/splot/))
+{
+	$pwd=$ENV{PWD}; $pwd=~s/$ENV{HOME}\///;
+	$date=`date +%F`; chop $date;
+	$cmdstr50 = substr $cmdstr, 0, 50;
+	$precmd="$precmd set title \'$pwd> gp $cmdstr50                          \' $title_offset;";
+}
+if ($precmd =~/set term/ ||  $plotdone =~/set term/ || $fname =~/\S/){
+	if (defined $ofilename)
+	{
+		$precmd =~ s/set output (\S+)/set output $ofilename;/;
+		$precmd =~ s/g.ps/$ofilename/;
+	}
+	$goption =~ s/-persist//;
+} elsif ($goption !~ /-persist/) {
+    if ($rereadperiod>=0){
+        $postcmd="$postcmd; pause $rereadperiod; reread";
+    }else{
+        $postcmd="$postcmd; pause -1";
+    }
+}
+
+if ($binning){
+  $precmd="c(x,binwidth)=int(x/binwidth+0.5)*1.*binwidth; $precmd";
+}
+
+$full_cmd="$plotdone $precmd $plot $curves; $postcmd";
+
+# plot ###########################################################
+if (!$ENV{GP_QUIET}){print "$full_cmd\n";};
+
+$user = `whoami`; chop $user;
+
+$gcmdfile = "/tmp/$user".$$.".gnuplot";
+#$gcmdfile = "/tmp/$user".".gnuplot";
+open(ofile,">$gcmdfile");
+print ofile "$full_cmd\n";
+#print "$full_cmd\n"; # debug
+close(ofile);
+
+$ofile = "/tmp/$user".$$."-gnuplot.txt";
+open(ofile,">>$ofile");
+print ofile "$full_cmd\n\n";
+close(ofile);
+
+$ofile = "/tmp/$user"."-gp.txt";
+open(ofile,">>$ofile");
+print ofile "$cmdstr\n\n";
+close(ofile);
+
+#$gcmdi = "/tmp/$user".".gnuploti";
+#open(gcmdi,">>$gcmdi");
+#$full_cmd =~ s/pause (\S+)//g;
+#$full_cmd = "cd \"$pwd\"; $full_cmd";
+#print gcmdi "$full_cmd\n";
+#close(gcmdi);
+
+if ($interactive==0){ system "gnuplot $goption $gcmdfile"; }
+
+# help ############################################################
+sub print_help{
+	$f=`which @_`;
+	if (open(infile,"<$f"))
+	{
+		while (<infile>) {
+			last if /endcomments/;
+			if ((/\#/)&&(!/perl/)) {
+				print $_;
+			}
+		}
+	}
+}

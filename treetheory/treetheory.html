@@ -1,0 +1,412 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+           "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<meta name="GENERATOR" content="TtH 4.15">
+ <style type="text/css"> div.p { margin-top: 7pt;}</style>
+ <style type="text/css"><!--
+ td div.comp { margin-top: -0.6ex; margin-bottom: -1ex;}
+ td div.comb { margin-top: -0.6ex; margin-bottom: -.6ex;}
+ td div.hrcomp { line-height: 0.9; margin-top: -0.8ex; margin-bottom: -1ex;}
+ td div.norm {line-height:normal;}
+ span.roman {font-family: serif; font-style: normal; font-weight: normal;} 
+ span.overacc2 {position: relative;  left: .8em; top: -1.2ex;}
+ span.overacc1 {position: relative;  left: .6em; top: -1.2ex;} --></style>
+ <style type="text/css"><!--
+ .tiny {font-size:30%;}
+ .scriptsize {font-size:xx-small;}
+ .footnotesize {font-size:x-small;}
+ .smaller {font-size:smaller;}
+ .small {font-size:small;}
+ .normalsize {font-size:medium;}
+ .large {font-size:large;}
+ .larger {font-size:x-large;}
+ .largerstill {font-size:xx-large;}
+ .huge {font-size:300%;}
+ --></style>
+
+              
+<title> Quasivoid, Distinguishable-particle Lattice Model, and Configuration-tree Theory of Glass</title>
+ 
+<h1 align="center">Quasivoid, Distinguishable-particle Lattice Model, and Configuration-tree Theory of Glass </h1>
+
+<h3 align="center">by <a href= '/'>Chi-Hang Lam</a> </h3>
+
+
+<div class="p"><!----></div>
+<br />&nbsp;
+<div style="text-align:center"><span class="larger"><b><span style="color:#CC3333">Mysteries of Glass <br /></span></b></span></div>
+
+<div class="p"><!----></div>
+<span style="color:#1900B2"><b>The physics of glass</b></span> studies materials called glass formers which can be cooled to a disordered solid state at the glass transition temperature. Examples include not only common window glass, but also glassy polymers, metallic glasses, etc. Philip Anderson, a Nobel Laureate, wrote in 1995 that <span style="color:#1900B2"><b>“The deepest and most interesting unsolved problem in solid state theory is probably the theory of the nature of glass and the glass transition.” </b></span>
+Interestingly, the related and very important problem of spin glass is regarded by some as just an "appetizer" before moving on to glass. Theoretical research on glass is surprisingly controversial.
+A widely circulated comment by Harvard physicist David Weitz is that <span style="color:#1900B2"><b>“There are more theories of the glass transition than there are theorists who propose them.”</b></span> At present, not only that there is no encompassing theory of glass agreeable by most researchers, even the most fundamental questions such as whether the glass transition is thermodynamically or kinetically driven are highly controversial.
+Below, we briefly introduce our approach which has been showing signs of promise so far.
+Differences from other studies in the literature are pointed out in the footnotes.
+A presentation of some of these ideas can also be found in this <a href= 'https://www.youtube.com/watch?v=a4pcpbKuTls'>youtube video</a>.
+
+<div class="p"><!----></div>
+<br />&nbsp;
+<div style="text-align:center"><span class="larger"><b><span style="color:#CC3333">Particle hop under deep supercooling <br /></span></b></span></div>
+
+<div class="p"><!----></div>
+Motions of individual particles can be observed directly in molecular dynamics (MD) simulations of molecular systems and in experiments or simulations of glassy colloidal systems of packed spheres. Supercooling is approached by decreasing the temperature or by increasing the packing fraction respectively. 
+In moderately supercooled liquids, particles tend to move collectively with surrounding particles. By contrast, under deep supercooling, particles only vibrate about their meta-stable positions most of the time. Occasionally, a line of particles performs a string-like particle hopping motion in which the particles hop simultaneously along the line and replace the original positions of the preceding particles in the line.
+A string is usually short and involves on average only two particles.<a href="#tthFtNtAAB" id="tthFrefAAB"><sup>1</sup></a>  These hops involve displacements comparable to the particle diameters.<a href="#tthFtNtAAC" id="tthFrefAAC"><sup>2</sup></a>  They are rare activated events, but dominate the dynamics, which is slow. A signature is a secondary peak in the particle displacement probability distribution, i.e. the Van Hove correlation function. <span style="color:#1900B2"><b>The glass transition occurs at deep supercooling. The relevant regime thus occurs when particles mainly hop over distances comparable to their diameters</b></span>. This eliminates liquid-like collective-flow characters and in fact simplifies the problem.
+
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/onehopA2.jpg&width=800'><img src='img/onehopA2.jpg' width=300 border=0 align=middle></a> </div>
+<span style="color:#009900">Trajectory of a particle, i.e. monomer, in a MD simulation of glassy polymer in 3D. It vibrates and then hops from one meta-stable state to another [<a href="#lam2017" id="CITElam2017" class="tth_citation">3</a>].</span> 
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/hist.jpg&width=800'><img src='img/hist.jpg' width=300 border=0 align=middle></a> </div>
+<span style="color:#009900">Probability distribution of particle displacement during time interval &#964; at temperature T, i.e. Van Hove correlation function. The main peak is mainly contributed by particles which only vibrate. A secondary peak at a displacement comparable to the particle diameters emerges at low temperature, signifying activated hopping at deep supercooling [<a href="#lam2017" class="tth_citeref">3</a>].</span>
+ </td></tr></table>
+
+
+<div class="p"><!----></div>
+<br />&nbsp;
+<div style="text-align:center"><span class="larger"><b><span style="color:#CC3333">Back-and-forth particle hops <br /></span></b></span></div>
+
+<div class="p"><!----></div>
+The rate of particle hops decreases as temperature decreases as in typical activated dynamics. Another important factor of slowing down is due to back-and-forth hops. 
+For each particle hop, we observe a subsequent returning hop with a probability of up to 93% in molecular dynamics simulations [<a href="#lam2017" class="tth_citeref">3</a>] and 80% in colloidal experiments [<a href="#yip2020" id="CITEyip2020" class="tth_citation">11</a>], which can be extrapolated to even higher values consistent with unity at deep supercooling limit.  
+<span style="color:#1900B2"><b>This motivates and supports our view that glassy slowdown is mainly because the return probability of particle hops approaches unity, i.e. nearly all hops are reversed. A small fraction of hops which are not reversed then dominate the dynamics [<a href="#lam2017" class="tth_citeref">3</a>].</b></span>
+<a href="#tthFtNtAAD" id="tthFrefAAD"><sup>3</sup></a>
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/strrep-animated.gif&width=800'><img src='img/strrep-animated.gif' width=300 border=0 align=middle></a> </div>
+  
+<div style="text-align:center"><a href='resize.php?fig=img/strrep1B.jpg&width=800'><img src='img/strrep1B.jpg' width=240 border=0 align=middle></a> </div>
+  <span style="color:#009900">(Above) Three particles in a 3D polymer simulation which hop together four times, i.e. two round-trips, shown as animation and time-coarse-grained particle trajectories. (Right) Movie of trajectories of hopped particles in a 3D polymer simulation with 1500 chains each of 10 particles. Random colors denote the time at which a hop occurs. A trajectory with a changing color thus indicates back-and-forth hopping events. Numerous repetitive string-like particle hopping motions are observed [<a href="#lam2017" class="tth_citeref">3</a>]. </span>
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><video width='500' src='img/hops036.mp4' controls autoplay  preload='metadata'> </video></div>
+ </td></tr></table>
+
+
+<div class="p"><!----></div>
+<br />&nbsp;
+<div style="text-align:center"><span class="larger"><b><span style="color:#CC3333">Mobile layer in glassy polymer film <br /></span></b></span></div>
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left">We first recognized the importance of repetitive particle hops in the study of glassy polymer films, which is  a topic of interest because one may find insights not available in the bulk. Our experiments on glassy polystyrene films show the existence of a non-glassy liquid mobile layer on its surface [<a href="#tsui2010" id="CITEtsui2010" class="tth_citation">10</a>]. Surface mobility is well understood for crystals, e.g. silicon, where the surface atomic layer is weakly bonded and dominate the dynamics. In our polymers with chains each having 22 monomers, mobility enhancement must penetrate much deeper than merely the surface atoms since a whole chain needs to move together. The mobile layer found to be about 2 nanometers thick thus consists of many atomic layers and is indeed surprisingly thick. 
+
+<div class="p"><!----></div>
+The properties in the surface layer converge gradually to those of the bulk when going deeper into the film.
+By examining how deep surface effects penetrate into a film using MD simulations,  we identified a peculiar inner surface layer, which is the deepest layer away from the free surface still enjoying surface effects. In this layer, particle hopping rate measured from short-time displacements is bulk-like, as expected from bulk-like structural properties at this depth into the film. 
+However, hopping rates inferred from longer-time displacements are clearly surface enhanced.
+<span style="color:#1900B2"><b>Therefore, the free surface provides a unique situation in which long-time dynamical behaviors can be perturbed, while structural and short-time dynamical properties are kept invariant.</b></span>
+The enhanced long-time dynamics was found to be due to a break down of back-and-forth hopping motions. Since the surface layer is found non-glassy experimentally [<a href="#tsui2010" class="tth_citeref">10</a>], our results support that <span style="color:#1900B2"><b>back-and-forth particle hopping motion is of central importance and its presence or absence and make or break the glass</b></span> [<a href="#lam2018film" id="CITElam2018film" class="tth_citation">4</a>].
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/hop.jpg&width=800'><img src='img/hop.jpg' width=300 border=0 align=middle></a> </div>
+<span style="color:#009900">
+Particle hopping rate R(&#964;) as a function of perpendicular coordinate z in the film from 3D glassy polymer film simulations, with the free surface at z  &#8773; 10. Hops are considered to have occurred if particle displacements during a time interval &#964; is comparable to or larger than the average particle diameter.  Dependence of R(&#964;) on &#964; indicates temporal correlations, i.e. back-and-forth hops. In the inner surface layer (green region), R(&#964;) at small &#964; is  bulk-like. However, R(&#964;) at large &#964; is larger than its bulk value, signifying surface enhanced mobility [<a href="#lam2018film" class="tth_citeref">4</a>].</span>
+ </td></tr></table>
+
+
+<div class="p"><!----></div>
+<br />&nbsp;
+<div style="text-align:center"><span class="larger"><b><span style="color:#CC3333">Quasivoid <br /></span></b></span></div>
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left">Glass formers in general consist of rather hard-core particles, the hops of which necessarily require empty spaces, i.e. free volumes. A free volume of size comparable to a particle is called a void. At deep supercooling, we found that sequences of particle hops are easily rationalized as motions induced by voids [<a href="#lam2017" class="tth_citeref">3</a>,<a href="#yip2020" class="tth_citeref">11</a>]. In an earlier  discussion with David Weitz, he told us that he looked very carefully at his colloidal samples, but could not see any void. After viewing the repetitive particle motions in our simulations, he remarked that "If voids cannot exist in real space, they must be  quasi-particles in the phase space." Now, our view is that contiguous voids of sizes comparable to the particles are rare. To increase the entropy, surrounding particles displace inward, so that a void is split into a few free volume fragments in a small neighborhood. <span style="color:#1900B2"><b>We define a quasivoid as a quasi-particle consisting of a few free volume fragments in a small neighborhood with a combined size comparable to the particle size.</b></span>
+
+<div class="p"><!----></div>
+<span style="color:#1900B2"><b>A direct evidence of quasivoid came from the experimental observation of its reversible transformation into a vacancy, a well-established quasi-particle, across a glass-crystal interface.</b></span> This result was obtained quite accidentally. When producing crystalline colloidal systems, there are inevitably some "bad" samples which have regions of glass coexisting with crystalline domains. We observe that vacancies can diffuse into the disordered regions and induce very typical string-like hopping motions there. A quasivoid is also able to diffuse back to the crystalline region to regenerate a vacancy. Besides demonstrating the relevance of quasivoid, this is also the first time that the precise structural feature, i.e. a vacancy, causing a string-like motion is unambiguously identified [<a href="#yip2020" class="tth_citeref">11</a>].
+<a href="#tthFtNtAAE" id="tthFrefAAE"><sup>4</sup></a>
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/strincoherent.gif&width=800'><img src='img/strincoherent.gif' width=350 border=0 align=middle></a> </div>
+  <span style="color:#009900">Eight particles in a 3D glassy polymer simulation which hop repeatedly. Since particles cannot overlap, the white particle on the left, for example, must move away before one of the red particles can fill its position. The motions can be easily rationalized by considering that all hops are induced by void moving along the chain, which naturally exclude any unphysical particle overlapping event. </span> 
+ </td></tr></table>
+
+
+<div class="p"><!----></div>
+
+
+<div style="text-align:center"><a href='resize.php?fig=img/glass_crystal_interface.jpg&width=800'><img src='img/glass_crystal_interface.jpg' width=600 border=0 align=middle></a> </div>
+
+
+<div class="p"><!----></div>
+<span style="color:#009900">Particle motions in an experiment on 2D colloidal system of micron-sized spheres exhibiting coexisting glassy (white) and crystalline (red) regions. (a) Coarse-grained particle trajectories during 8 hours of observation and (b-f) the same trajectories split up over consecutive time sub-intervals. Red dots show initial particle positions. (b) A void moves from the glass to the crystal and (d) moves back to the glass. Typical string-like motions are induced in the glassy region. Insets in (b-f): Trajectories shown together with initial particle configurations of the time subinterval. The void takes the form of a vacancy (blue solid circles) in the crystal (c-d) and a quasivoid with fragmented free volumes (blue areas) in the glass
+(b,e.f) [<a href="#yip2020" class="tth_citeref">11</a>].</span>
+
+
+<div class="p"><!----></div>
+<br />&nbsp;
+<div style="text-align:center"><span class="larger"><b><span style="color:#CC3333">Trapping and facilitated motion of quasivoids <br /></span></b></span></div>
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left">Assuming that particle hops are induced by quasivoids, back-and-forth hops at deep supercooling then signify the trapping of a quasivoid by the potential energy landscape (PEL) to motions within a few meta-stable positions. How can quasivoid be untrapped? 
+We observe that isolated string-like motions repeat itself for much longer time. In contrast, multiple nearby string-like motions reconfigure much more readily [<a href="#lam2017" class="tth_citeref">3</a>,<a href="#yip2020" class="tth_citeref">11</a>].  
+<span style="color:#1900B2"><b>Opposite to PEL dictating quasivoid motions, movements of a quasivoid perturb the PEL of other quasivoids.</b></span>  <a href="#tthFtNtAAF" id="tthFrefAAF"><sup>5</sup></a>
+This is because quasivoid motions rearrange particles along its path. As particles are in general distinct in glass, this alters the PEL as experienced by another quasivoid in the immediate neighborhood.
+This can open up new pathways of motion of the latter. In terms of string-like motions of particles, this leads to a form of dynamic string interactions [<a href="#lam2017" class="tth_citeref">3</a>].
+As a result, <span style="color:#1900B2"><b>multiple quasivoids in close proximity mutually open up new hopping pathways for each other and facilitate their motions</b></span>.
+<a href="#tthFtNtAAG" id="tthFrefAAG"><sup>6</sup></a>
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<table class="tabular">
+<tr><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/strint-animated.gif&width=800'><img src='img/strint-animated.gif' width=200 border=0 align=middle></a> </div> </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/strint3A.jpg&width=800'><img src='img/strint3A.jpg' width=200 border=0 align=middle></a> </div>   </td></tr></table>
+
+    <span style="color:#009900">Motion of 6 particles from 3D polymer simulations during a pair-interaction between two strings illustrated using animation (left) and coarse-grained trajectories (right). 
+  </span>
+ </td></tr></table>
+
+
+<div class="p"><!----></div>
+<br />&nbsp;
+<div style="text-align:center"><span class="larger"><b><span style="color:#CC3333">Distinguishable-particle lattice model <br /></span></b></span></div>
+
+<div class="p"><!----></div>
+MD simulations are widely believed to be sufficiently realistic for capturing the essence of glassy dynamics. Nevertheless, it is still a challenge to identify the relevant physical processes in MD. Lattice models are much simpler. If they manage to capture the essential physics, they bridge nicely between MD results and theories.
+We introduced a <span style="color:#1900B2"><b>distinguishable-particle lattice model (DPLM)</b></span> primarily to illustrate the facilitated motions of quasivoid we have observed in MD simulations [<a href="#zhang2017" id="CITEzhang2017" class="tth_citation">12</a>]. It then proves to be useful for testing and inspiring further theoretical concepts and calculations. 
+We study a range of phenomena using the same model with no or few modifications.
+In each of a series of papers, we focus on how the DPLM reproduces and contributes to the explanation of a certain glassy phenomenon. However, the more important question is whether and how a single model can capture all these diverse phenomena in a consistent and unified manner. We believe that the DPLM has been making good progress and is very promising towards this aim. 
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left">In the DPLM, each particle on a square lattice is of its own type. <span style="color:#1900B2"><b>Any two nearest neighboring particles k and l interact with an energy V<sub>kl</sub> randomly sampled at the beginning of the simulation from a probability distribution g(V), which can be, e.g. a uniform distribution.</b></span>
+<a href="#tthFtNtAAH" id="tthFrefAAH"><sup>7</sup></a>
+The random interactions effectively account for the random pair interactions  due to random particle separations in a disordered system. 
+A particle can hop to an empty nearest neighboring site, i.e. a void, with a standard kinetic Monte Carlo rate following detailed balance.
+As particle moves around, the interaction between any two neighboring sites also changes. <span style="color:#1900B2"><b>The model thus has randomness quenched in the configuration space but not quenched in the real space.</b></span>
+As a nice surprise, exact equilibrium statistics of the DPLM is known: every interaction simply follows the Boltzmann distribution independently [<a href="#zhang2017" class="tth_citeref">12</a>].  This greatly assists both simulations and analytic calculations.
+<a href="#tthFtNtAAI" id="tthFrefAAI"><sup>8</sup></a>
+
+<div class="p"><!----></div>
+<span style="color:#1900B2"><b>The DPLM demonstrates a wide range of glassy phenomena as well as facilitated dynamics.</b></span> As temperature decreases, isolated voids are increasingly trapped by the rugged PEL formed by the random pair interactions. In contrast, coupled voids are more mobile due to facilitated dynamics analogous to those observed in MD simulations [<a href="#zhang2017" class="tth_citeref">12</a>].
+
+<div class="p"><!----></div>
+The DPLM also successfully reproduces an aging phenomenon called <span style="color:#1900B2"><b>Kovacs paradox</b></span>, which have not been previously reproduced by any other particle simulations. When the temperature of a sample is abruptly increased (up-jumped), the sample seems to persistently 'remember' its initial temperature. In  the DPLM, we find strong spatial heterogeneity in the rate of warming, so that some unrelaxed cold domains persist and generate the 'memory'. This solves the paradox.
+A related and much better known phenomenon called <span style="color:#1900B2"><b>Kovacs effect</b></span> is also reproduced and is found to be caused by deviation of particle interactions from Boltzmann statistics under non-equilibrium conditions [<a href="#lulli2021" id="CITElulli2021" class="tth_citation">9</a>]. 
+
+<div class="p"><!----></div>
+Different glasses classified as <span style="color:#1900B2"><b>strong or fragile</b></span> can both be modeled by choosing different particle pair-interaction distribution g(V). (Fragile glasses are those with highly super-Arrhenius dynamic slowdown, in a more dramatic manner than in strong glasses.) Fragile glass is obtained when g(V) has a bi-modal distribution, with a small but finite chance that any two particles when neighboring each other have low-energy interactions. As temperature decreases, these rare stable states become statistically important. Dynamics is thus highly constrained and slowed down as the system prefers to maintain a significant population of them [<a href="#lee2020" id="CITElee2020" class="tth_citation">7</a>]. 
+
+<div class="p"><!----></div>
+<span style="color:#1900B2"><b>Fragile glass has large heat capacity and exhibits strong heat-capacity hysteresis during cooling-heating cycles.</b></span> In the DPLM, heat capacity is dominated by particle pair interactions <a href="#tthFtNtAAJ" id="tthFrefAAJ"><sup>9</sup></a> . During cooling of fragile glass, as high-energy interactions are replaced by low-energy ones in the bimodal distribution, large amount of energy is released, leading to a large heat capacity. In addition, as the particle pairings and the associated interactions relax slowly at low temperature, heat capacity hysteresis results [<a href="#lee2021" id="CITElee2021" class="tth_citation">6</a>].
+
+<div class="p"><!----></div>
+Most glasses show heat capacity proportional to temperature when cooled to a few Kelvins, widely believed to be due to <span style="color:#1900B2"><b>two-level systems</b></span>. As temperature decreases in the DPLM, voids are more and more tightly trapped by the PEL until most of them are completely immobile, but the rest of them mostly hop between two sites, forming two-level systems. The linear relation between heat capacity and temperature is also explicitly reproduced <a href="#tthFtNtABA" id="tthFrefABA"><sup>10</sup></a> [<a href="#gao2021" id="CITEgao2021" class="tth_citation">2</a>].
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<table class="tabular">
+<tr><td align="left">
+<div style="text-align:center"><video width='300' src='img/DPLM_videoA_T050.mp4' controls autoplay  preload='metadata'> </video></div> </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><video width='300' src='img/DPLM_videoB_T016.mp4' controls autoplay  preload='metadata'> </video></div> </td></tr></table>
+
+<span style="color:#009900">Videos on equilibrium particle dynamics from DPLM simulations  with 1592 particles (randomly colored) and 8 voids (white). At a high temperature (left), voids diffuse independently without trapping. In contrast, at a low temperature (right), isolated voids are trapped by the disorder. Two coupled voids on the top right corner move substantially more vigorously, demonstrating dynamic facilitation. This and similar pairs in a large system eventually visit the whole lattice so that all particles are mobile at long time [<a href="#zhang2017" class="tth_citeref">12</a>].</span>
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left">
+<div style="text-align:center"><video width='300' src='img/down_jump.webmhd.webm' controls autoplay  preload='metadata'> </video></div> </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><video width='300' src='img/up_jump.webmhd.webm' controls autoplay  preload='metadata'> </video></div> </td></tr></table>
+
+<span style="color:#009900">Videos showing local structural temperature T<sub>s</sub> and particle displacement d after an abrupt temperature down jump (left) or up jump (right) from DPLM simulations.
+Black squares in the lower diagrams represent voids. Only in the up jump, particle dynamics is spatially heterogeneous so that initial cool regions persist until very close to equilibrium, leading to memory effects. The structural temperature, analogous to fictive temperature, is measured by comparing the statistics of particle pair-interactions in the system with Boltzmann statistics [<a href="#lulli2020" id="CITElulli2020" class="tth_citation">8</a>].</span>
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/AngellD.jpg&width=800'><img src='img/AngellD.jpg' width=300 border=0 align=middle></a> </div>
+<span style="color:#009900">Angell plot of reciprocal diffusion coefficient D<sup>&#8722;1</sup> against reciprocal temperature T<sub>g</sub>/T normalized by the glass transition temperature T<sub>g</sub> for various interaction energy distributions parametrized by G<sub>0</sub> and hopping energy barrier offset E<sub>0</sub> from DPLM simulations. Both strong and fragile glasses are observed [<a href="#lee2020" class="tth_citeref">7</a>].</span>
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/PDP.jpg&width=800'><img src='img/PDP.jpg' width=300 border=0 align=middle></a> </div>
+<span style="color:#009900">Spatial profiles showing the probability p<sup>void</sup> that a lattice site is occupied by a void during cooling. In each case, measurement is conducted over a period during which 10<sup>7</sup> particle hops have occurred. Hops appear fewer at lower temperature only because of increasingly severe back-and-forth motions. Sites at which no void is detected are shaded white. Initial void positions at each period are marked by black squares. Voids visit fewer and fewer sites as temperature decreases, until a pair of two-level systems A and B have emerged at the lowest temperature in (d) [<a href="#gao2021" class="tth_citeref">2</a>].</span>
+ </td></tr></table>
+
+
+<div class="p"><!----></div>
+ </td></tr></table>
+<br />&nbsp;
+<div style="text-align:center"><span class="larger"><b><span style="color:#CC3333">Random local configuration-tree theory <br /></span></b></span></div>
+
+<div class="p"><!----></div>
+
+<table class="tabular">
+<tr><td align="left"><span style="color:#1900B2"><b>We construct a microscopic theory of glass in finite dimensions based on motions of quasivoids affected by and at the same time affecting the PEL.</b></span> To account for facilitation, we analyze local regions of size <i>V</i> with m &#8805; 1 coupled quasivoids.
+<a href="#tthFtNtABB" id="tthFrefABB"><sup>11</sup></a>
+A fit to 2D DPLM results in the end gives an area of <i>V</i>=12 lattice points, indicating the range of facilitation. Due to the rugged PEL, only a fraction q of nearest neighboring hops of each void is considered energetically favorable. Unfavorable hops are neglected. For the DPLM, q as a function of temperature T can be straightforwardly estimated, assuming that an energy excitation of <i>C</i> k<sub>B</sub>T for a single hop is energetically acceptable. A fit to 2D DPLM results gives <i>C</i>=1.7 which is of order 1 as expected. We apply a fully interacting strings approximation in which every hop of a void completely changes the PEL of any other void in the region. All  energetically favorable, i.e. reachable,  particle configurations of a region can well be arranged in a random tree, with each edge corresponding to a hopping event of a void. We then solve the percolation problem of the diffusion of configuration in the random tree for various values of m.
+<a href="#tthFtNtABC" id="tthFrefABC"><sup>12</sup></a>
+Results are mapped to diffusion of void and further to the diffusion of particles in the real space. 
+
+<div class="p"><!----></div>
+    Applying the tree theory, we have obtained analytic expressions for the diffusion coefficient [<a href="#lam2018tree" id="CITElam2018tree" class="tth_citation">5</a>] and more generally for the particle mean square displacement at arbitrary time [<a href="#deng2019" id="CITEdeng2019" class="tth_citation">1</a>]. They are expected to be applicable to both molecular and lattice systems, but we have only applied them to the DPLM at this point. With only two tunnable parameters <i>V</i> and <i>C</i>, DPLM results for a wide range of temperature and void density can be reasonably accounted for.
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/Tree_Diagram_random_Energy_Landscape.jpg&width=800'><img src='img/Tree_Diagram_random_Energy_Landscape.jpg' width=300 border=0 align=middle></a> </div>
+<span style="color:#009900">Sketch of the local configuration tree energy landscape for a local region with a single void. A node denotes an arrangement of all particles in the region, i.e. a particle configuration. The energy for a node is represented schematically by the height of the cylinder at the node. Red (grey) cylinders indicate the configuration with lower (higher) energies, which are considered to be more (less) energetically favorable. Blue edges connect the nodes with red cylinders and represent the only possible transitions. The red nodes with the blue edges form the random configuration-tree.</span>
+ </td></tr></table>
+
+
+<table class="tabular">
+<tr><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/D_T.jpg&width=800'><img src='img/D_T.jpg' width=400 border=0 align=middle></a> </div>
+<span style="color:#009900">Particle diffusion coefficient D against reciprocal temperature 1/T for various void density &#981;<sub>v</sub> from DPLM simulations (points) and tree-theoretical calculations (lines). The tree theory uses two adjustable parameters for all the curves.</span>
+ </td><td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td><td align="left">
+<div style="text-align:center"><a href='resize.php?fig=img/msd_valsa.jpg&width=800'><img src='img/msd_valsa.jpg' width=450 border=0 align=middle></a> </div>
+<span style="color:#009900">Mean squared displacement (MSD) versus time t for decreasing temperatures (from top to bottom) from DPLM simulations (points) and tree-theoretical calculations. We apply the same values of the two parameters used in the fit of D and there is no additional adjustable parameter. Despite the shallow plateaus, the system is deeply supercooled at the lower temperatures studied because particle vibrations are not considered. <a href="#tthFtNtABD" id="tthFrefABD"><sup>13</sup></a> </span>
+ </td></tr></table>
+
+
+<div class="p"><!----></div>
+<hr>
+
+<div class="p"><!----></div>
+References listed below can be downloaded <a href= '/#glasspub'>here</a>.
+
+<div class="p"><!----></div>
+                          
+<div class="p"><!----></div>
+<h2>References</h2>
+
+<dl>
+ <dt><a href="#CITEdeng2019" id="deng2019">[1]</a></dt><dd>
+Hai-Yao Deng, Chun-Shing Lee, Matteo Lulli, Ling-Han Zhang, and Chi-Hang Lam.
+ Configuration-tree theoretical calculation of the mean-squared
+  displacement of particles in glass formers.
+ <em>Journal of Statistical Mechanics: Theory and Experiment</em>,
+  2019(9):094014, 2019.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEgao2021" id="gao2021">[2]</a></dt><dd>
+Xin-Yuan Gao, Hai-Yao Deng, Chun-Shing Lee, JQ&nbsp;You, and Chi-Hang Lam.
+ Emergence of two-level systems in glass formers: a kinetic monte
+  carlo study.
+ <em>arXiv preprint arXiv:2109.02275</em>, 2021.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITElam2017" id="lam2017">[3]</a></dt><dd>
+Chi-Hang Lam.
+ Repetition and pair-interaction of string-like hopping motions in
+  glassy polymers.
+ <em>The Journal of Chemical Physics</em>, 146(24):244906, 2017.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITElam2018film" id="lam2018film">[4]</a></dt><dd>
+Chi-Hang Lam.
+ Deeper penetration of surface effects on particle mobility than on
+  hopping rate in glassy polymer films.
+ <em>The Journal of Chemical Physics</em>, 149:164909, 2018.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITElam2018tree" id="lam2018tree">[5]</a></dt><dd>
+Chi-Hang Lam.
+ Local random configuration-tree theory for string repetition and
+  facilitated dynamics of glass.
+ <em>Journal of Statistical Mechanics: Theory and Experiment</em>,
+  2018(2):023301, 2018.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITElee2021" id="lee2021">[6]</a></dt><dd>
+Chun-Shing Lee, Hai-Yao Deng, Cho-Tung Yip, and Chi-Hang Lam.
+ Large heat-capacity jump in cooling-heating of fragile glass from
+  kinetic monte carlo simulations based on a two-state picture.
+ <em>Physical Review E</em>, 104:024131, 2021.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITElee2020" id="lee2020">[7]</a></dt><dd>
+Chun-Shing Lee, Matteo Lulli, Ling-Han Zhang, Hai-Yao Deng, and Chi-Hang Lam.
+ Fragile glasses associated with a dramatic drop of entropy under
+  supercooling.
+ <em>Physical Review Letters</em>, 125:265703, 2020.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITElulli2020" id="lulli2020">[8]</a></dt><dd>
+Matteo Lulli, Chun-Shing Lee, Hai-Yao Deng, Cho-Tung Yip, and Chi-Hang Lam.
+ Spatial heterogeneities in structural temperature cause kovacs'
+  expansion gap paradox in aging of glasses.
+ <em>Physical Review Letters</em>, 124:095501, 2020.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITElulli2021" id="lulli2021">[9]</a></dt><dd>
+Matteo Lulli, Chun-Shing Lee, Ling-Han Zhang, Hai-Yao Deng, and Chi-Hang Lam.
+ Kovacs effect in glass with material memory revealed in
+  non-equilibrium particle interactions.
+ 2021(9):093303, 2021.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEtsui2010" id="tsui2010">[10]</a></dt><dd>
+Zhaohui Yang, Yoshihisa Fujii, Fuk&nbsp;Kay Lee, Chi-Hang Lam, and Ophelia K.&nbsp;C.
+  Tsui.
+ Glass transition dynamics and surface layer mobility in unentangled
+  polystyrene films.
+ <em>Science</em>, 328(5986):1676, 2010.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEyip2020" id="yip2020">[11]</a></dt><dd>
+Cho-Tung Yip, Masaharu Isobe, Chor-Hoi Chan, Simiao Ren, Kin-Ping Wong,
+  Qingxiao Huo, Chun-Sing Lee, Yuen-Hong Tsang, Yilong Han, and Chi-Hang Lam.
+ Direct evidence of void-induced structural relaxations in colloidal
+  glass formers.
+ <em>Physical Review Letters</em>, 125:258001, 2020.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEzhang2017" id="zhang2017">[12]</a></dt><dd>
+Ling-Han Zhang and Chi-Hang Lam.
+ Emergent facilitation behavior in a distinguishable-particle lattice
+  model of glass.
+ <em>Physical Review B</em>, 95:184202, 2017.</dd>
+</dl>
+
+
+<div class="p"><!----></div>
+<hr /><h3>Footnotes:</h3>
+
+<div class="p"><!----></div>
+<a id="tthFtNtAAB"></a><a href="#tthFrefAAB"><sup>1</sup></a>Despite some researchers expecting a divergence at low temperature, string lengths we have measured are in agreement with some other works which report a slight decrease as temperature decreases.
+<div class="p"><!----></div>
+<a id="tthFtNtAAC"></a><a href="#tthFrefAAC"><sup>2</sup></a>Some works define hops or jumps over much smaller distances. Those occur at more moderate supercooling and are non-activated as they are not associated with any peak in the Van Hove correlation function.
+<div class="p"><!----></div>
+<a id="tthFtNtAAD"></a><a href="#tthFrefAAD"><sup>3</sup></a>Many other theories assume that the glassy slowdown is mainly because of a decrease in the particle hopping rate. We are not aware of any other theory suggesting that it is mainly because of increased back-and-forth hopping tendency. 
+<div class="p"><!----></div>
+<a id="tthFtNtAAE"></a><a href="#tthFrefAAE"><sup>4</sup></a>We focus on strings of simultaneous particle hops, i.e. coherent strings also called micro-strings. Many other works consider more conventional definitions based on longer-time displacements and view the cause of string-like motions as still an open question.
+<div class="p"><!----></div>
+<a id="tthFtNtAAF"></a><a href="#tthFrefAAF"><sup>5</sup></a>While defect motions as dictated by the PEL is widely discussed, we are not aware of any other study on how particle motions perturb the PEL of other defects.
+<div class="p"><!----></div>
+<a id="tthFtNtAAG"></a><a href="#tthFrefAAG"><sup>6</sup></a>The origins of kinetic constraints and facilitation rules in a class of lattice models called kinetically constrained models are still considered open questions. Here, trapping of quasivoids by PEL and  the facilitation mechanism by PEL perturbation provide possible microscopic mechanisms behind similar rules. 
+<div class="p"><!----></div>
+<a id="tthFtNtAAH"></a><a href="#tthFrefAAH"><sup>7</sup></a>Many lattice models of glass consider identical particles or identical spins. It is much less trivial for these model to generate random interactions analogous to those in glass. Generating a continuous spectrum of possible interaction energies is also difficult for these models as the number of particle/spin configurations in a local region of a lattice is often small. Some other models apply site-dependent quenched randomness, which is however more appropriate for spin glass than glass.
+<div class="p"><!----></div>
+<a id="tthFtNtAAI"></a><a href="#tthFrefAAI"><sup>8</sup></a>Some simpler models, e.g. energetically trivial models, of glass also admit exact equilibrium statistics. The DPLM, with a nontrivial configuration-dependent energy, is in our knowledge the most sophisticated lattice model which still enjoys this property.
+<div class="p"><!----></div>
+<a id="tthFtNtAAJ"></a><a href="#tthFrefAAJ"><sup>9</sup></a>The DPLM is a particle model and thus has a realistic heat capacity per particle. Some more simplified models, such as defect models in which particles indeed represent defects, in general exhibit unrealistically small heat capacity.
+<div class="p"><!----></div>
+<a id="tthFtNtABA"></a><a href="#tthFrefABA"><sup>10</sup></a>This property requires that the pair interaction distribution follows a continuum distribution, analogous to assumptions in the well-established two-level picture. Other lattice models with discrete sets of interaction energies is unlikely to generate similar results. 
+<div class="p"><!----></div>
+<a id="tthFtNtABB"></a><a href="#tthFrefABB"><sup>11</sup></a>This is a finite dimensional theory as how voids neighbor each other is important. Consideration of local regions, with various number of voids, in general differs from mean-field approaches where locality is mostly neglected. 
+<div class="p"><!----></div>
+<a id="tthFtNtABC"></a><a href="#tthFrefABC"><sup>12</sup></a>We apply percolation theory in the configuration space, as opposed to the real space which is more often considered. There is also an infinite sequence of percolation transitions for various number of voids m in the regions. This is in contrast to a single transition assumed in all other percolation studies of glass we are aware of.
+<div class="p"><!----></div>
+<a id="tthFtNtABD"></a><a href="#tthFrefABD"><sup>13</sup></a>This is in our knowledge the only  analytical calculation of the whole MSD versus time relation in the literature of glass.
+<br /><br /><hr /><small>File translated from
+T<sub><span class="small">E</span></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><span class="small">T</span></sub>H</a>,
+version 4.15.<br />On  9 Dec 2022, 17:38.</small>
+</html>

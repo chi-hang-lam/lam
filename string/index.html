@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>String repetition and interaction</title>
+    <style>
+    .videolist {
+        text-align: center;
+    }
+    .videolist > div {
+        display: inline-block;
+        margin: 10px;
+    }
+    .videolist > div > div {
+        font-size: large;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+    .videolist > div > video {
+        display: block;
+        width: 500px;
+    }
+    </style>
+</head>
+<body>
+<h2>Movies and Animation for "Repetition and pair-interaction of string-like hopping motions in glassy polymers"</h2> 
+<h3>Chi-Hang Lam</h3> 
+<h3>Department of Applied Physics, Hong Kong Polytechnic University</h3> 
+<h3>(A) Coarse-grained trajectories of hopped particles</h3> 
+<p>
+Glassy polymer is simulated using molecular dynamics (MD) simulation of a bead-spring model of polymer. Lennard-Jones (LJ) units are assumed in the simulation. The cubic box has a length 24.3 following periodic boundary conditions and contains 1500 chains each with 10 monomers. 
+We now describe the videos in terms of video playtime, 1 second of which corresponds to a duration of 2500 and 5000 for the simulations at temperature T=0.36 and 0.32 respectively, At playtime t<sub>0</sub>, a video shows particle coarse-grained trajectories during [t<sub>0</sub>, t<sub>0</sub> + 1s]. Only hopped particles, which displace more than 0.6 during any subinterval of the period, are shown. 
+A segment in a trajectory is colored according to playtime t' at which the corresponding displacement occurs. Specifically, (t' mod 1s) serves as the index to the color bar below. Therefore, a simple string-like motion admits fixed coloring and will be displayed for 1s. Rapidly repeating string-like motions will be shown with time-varying colors and last for more than 1s. Slowly repeating ones will appear, disappear, and then appear again in general in different colors.
+(Color bar: <img src="colorbar.png" height="10">)
+</p>
+<div class="videolist">
+    <div>
+        <video src="hops036.mp4" controls preload="metadata">
+            Your browser does not support HTML5 video. Please click link below to download movie.
+        </video>
+        <div>T=0.36 ( <a href="hops036.mp4" download>hops036.mp4</a>, 18 MB 5 fps 1280x960 5:47 )</div>
+    </div>
+</div>
+</body>
+</html>
+
+</p>
+<div class="videolist">
+    <div>
+        <video src="hops032.mp4" controls preload="metadata">
+            Your browser does not support HTML5 video. Please click link below to download movie.
+        </video>
+        <div>T=0.32 (<a href="hops032.mp4" download>hops032.mp4</a>, 19 MB 166s 10 fps 1280x960 3:19 ) </div>
+    </div>
+</div>
+
+<h3>(B) Repetitive particle hoppings in an incoherent string</h3> 
+The animation below shows the motions of particles in an incoherent string in a simulation at T=0.32. Each second of playtime corresponds to a duration of 1000 in the simulation. Only hopped particles in the local region, which displace more than 0.6 during the period, are shown. Particle positions are time-averaged in the same way as in the coarse-grained trajectories. Different polymer chains are colored differently.  (<a href="str_incoherent.gif" download>str_incoherent.gif</a>,  animated GIF, 2 fps, 30 seconds)
+<p><center> <img src="str_incoherent.gif" > </center></p>
+
+
+</body>
+</html>
